@@ -11,8 +11,14 @@ impl Player {
         }
     }
 
-    fn place_bet(&mut self, bet_amount: u8) {
-        self.amount -= bet_amount;
+    fn place_bet(&mut self, bet_amount: u8) -> bool {
+        match self.amount >= bet_amount {
+            true => {
+                self.amount -= bet_amount;
+                true
+            }
+            false => false
+        }
     }
 }
 
@@ -47,7 +53,36 @@ fn main() {
     println!("\nYou bought in for ${buy_in_amount}");
 
     while player.amount != 0 {
-        player.place_bet(1);
+        let bet_amount = loop {
+            print!("Amount to bet: ");
+            if let Result::Err(_) = io::stdout().flush() {
+                println!("Could not clear stdout");
+                return;
+            }
+
+            let mut bet_amount_str: String = String::new();
+
+            if let Result::Err(_) = 
+                io::stdin().read_line(&mut bet_amount_str) {
+                println!("Failed to read input");
+                continue;
+            }
+
+            match bet_amount_str.trim().parse() {
+                Ok(num) => break num,
+                Err(_) => {
+                    println!("You entered {}", bet_amount_str);
+                    println!("Enter a valid $ amount");
+
+                    continue
+                }
+            }
+        };
+
+        if !player.place_bet(bet_amount) {
+            continue;
+        }
+
         println!("\nYou have ${}.00 left", player.amount);
 
         let player_cards = deal_first_cards();
