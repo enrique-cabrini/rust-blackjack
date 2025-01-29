@@ -1,28 +1,7 @@
 use std::io::{self, Write};
 
 mod card;
-
-struct Player {
-    amount: u8,
-}
-
-impl Player {
-    fn buy_in(buy_in_amount: u8) -> Player {
-        Self {
-            amount: buy_in_amount,
-        }
-    }
-
-    fn place_bet(&mut self, bet_amount: u8) -> bool {
-        match self.amount >= bet_amount {
-            true => {
-                self.amount -= bet_amount;
-                true
-            }
-            false => false,
-        }
-    }
-}
+mod player;
 
 const CARDS: (u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8) = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
@@ -57,7 +36,7 @@ fn main() {
         }
     };
 
-    let mut player = Player::buy_in(buy_in_amount);
+    let mut player = player::Player::buy_in(buy_in_amount);
     println!("\nYou bought in for ${buy_in_amount}");
 
     while player.amount != 0 {
