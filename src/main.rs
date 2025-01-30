@@ -17,16 +17,11 @@ fn main() {
     println!("***********************************");
 
     print!("\nEnter an amount to buy in: ");
-    match io::stdout().flush() {
-        Ok(_) => (),
-        Err(_) => panic!("Could not flush stdout\n"),
-    }
+    io::stdout().flush().expect("Could not flush stdout");
 
     let mut buy_in_amount: String = String::new();
-    match io::stdin().read_line(&mut buy_in_amount) {
-        Ok(_) => (),
-        Err(_) => panic!("Could not read input"),
-    }
+    io::stdin().read_line(&mut buy_in_amount)
+        .expect("Could not read input");
 
     let buy_in_amount: u8 = match buy_in_amount.trim().parse() {
         Ok(num) => num,
@@ -42,10 +37,7 @@ fn main() {
     while player.amount != 0 {
         let bet_amount = loop {
             print!("Amount to bet: ");
-            if let Result::Err(_) = io::stdout().flush() {
-                println!("Could not clear stdout");
-                return;
-            }
+            io::stdout().flush().expect("Could not clear stdout");
 
             let mut bet_amount_str: String = String::new();
 
