@@ -1,17 +1,16 @@
 use std::io::{self, Write};
 
+use card::Card;
+
 mod card;
 mod player;
-
-const CARDS: (u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8) = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
 fn main() {
     let mut deck = card::CardDeck::new();
     deck.shuffle();
 
-    for i in deck.cards {
-        println!("{:#?} {:#?}", i.rank, i.suit);
-    }
+    let mut player_hand: Vec<Card> = Vec::new();
+    let mut dealer_hand: Vec<Card> = Vec::new();
 
     println!("Welcome to Blackjack");
     println!("***********************************");
@@ -63,14 +62,14 @@ fn main() {
 
         println!("\nYou have ${}.00 left", player.amount);
 
-        let player_cards = deal_first_cards();
-        println!("Player Cards:\n{} {}", player_cards[0], player_cards[1]);
+        deck.deal_card(&mut player_hand);
+        for card in &player_hand {
+            println!("{}", card);
+        }
 
-        let dealer_cards = deal_first_cards();
-        println!("Dealer Cards:\n{} {}", dealer_cards[0], dealer_cards[1]);
+        deck.deal_card(&mut dealer_hand);
+        for card in &dealer_hand {
+            println!("{}", card);
+        }
     }
-}
-
-fn deal_first_cards() -> Vec<u8> {
-    vec![CARDS.1, CARDS.10]
 }

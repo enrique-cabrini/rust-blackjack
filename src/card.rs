@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 pub mod card {}
 
 #[derive(Debug, Clone, Copy)]
@@ -6,6 +8,17 @@ pub enum CardSuit {
     Heart,
     Spade,
     Diamond,
+}
+
+impl Display for CardSuit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            CardSuit::Club => write!(f, "Clubs"),
+            CardSuit::Diamond => write!(f, "Diamonds"),
+            CardSuit::Heart => write!(f, "Hearts"),
+            CardSuit::Spade => write!(f, "Spades"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -17,10 +30,28 @@ pub enum CardRank {
     Ace,
 }
 
+impl Display for CardRank {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            CardRank::Ace => write!(f, "Ace"),
+            CardRank::King => write!(f, "King"),
+            CardRank::Queen => write!(f, "Queen"),
+            CardRank::Jack => write!(f, "Jack"),
+            CardRank::Value(num) => write!(f, "{}", num)
+        }
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct Card {
     pub rank: CardRank,
     pub suit: CardSuit,
+}
+
+impl Display for Card {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} of {}", self.rank, self.suit)
+    }
 }
 
 #[derive(Clone)]
@@ -94,5 +125,9 @@ impl CardDeck {
 
         let mut rng = thread_rng();
         self.cards.shuffle(&mut rng);
+    }
+
+    pub fn deal_card(&mut self, hand: &mut Vec<Card>) {
+        hand.push(self.cards.remove(0));
     }
 }
