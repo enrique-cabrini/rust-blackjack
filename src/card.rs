@@ -130,4 +130,24 @@ impl CardDeck {
     pub fn deal_card(&mut self, hand: &mut Vec<Card>) {
         hand.push(self.cards.remove(0));
     }
+
+    pub fn get_total_hand_sum(hand: &Vec<Card>) -> u8 {
+        let mut total_hand_sum: u8 = 0;
+
+        for card in hand.into_iter() {
+            match card.rank.clone() {
+                CardRank::Value(value) => total_hand_sum += value,
+                CardRank::Ace => {
+                    if total_hand_sum + 11 > 21 {
+                        total_hand_sum += 1
+                    } else {
+                        total_hand_sum += 11
+                    }
+                }
+                _ => total_hand_sum += 10
+            }
+        }
+
+        total_hand_sum
+    }
 }

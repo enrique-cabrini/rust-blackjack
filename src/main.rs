@@ -1,12 +1,12 @@
 use std::io::{self, Write};
 
-use card::Card;
+use card::{CardDeck, Card};
 
 mod card;
 mod player;
 
 fn main() {
-    let mut deck = card::CardDeck::new();
+    let mut deck = CardDeck::new();
     deck.shuffle();
 
     let mut player_hand: Vec<Card> = Vec::new();
@@ -62,14 +62,16 @@ fn main() {
 
         println!("\nYou have ${}.00 left", player.amount);
 
-        deck.deal_card(&mut player_hand);
-        for card in &player_hand {
-            println!("{}", card);
+        for _ in 0..2 {
+            deck.deal_card(&mut player_hand);
+
+            deck.deal_card(&mut dealer_hand);
         }
 
-        deck.deal_card(&mut dealer_hand);
-        for card in &dealer_hand {
-            println!("{}", card);
-        }
+        println!("Player's hand:\n{}\n{}\n", player_hand[0],
+            player_hand[1]);
+
+        println!("Dealer's hand:\n{}\n{}\n", dealer_hand[0],
+            dealer_hand[1]);
     }
 }
