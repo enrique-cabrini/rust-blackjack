@@ -55,7 +55,8 @@ fn main() {
             }
         };
 
-        if !player.place_bet(bet_amount) {
+        if let Err(bet_error) = player.place_bet(bet_amount) {
+            println!("{}", bet_error);
             continue;
         }
 
