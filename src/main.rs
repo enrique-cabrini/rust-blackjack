@@ -1,6 +1,7 @@
 use std::io::{self, Write};
+use std::cmp::Ordering;
 
-use card::{CardDeck, Card};
+use card::{Card, CardDeck};
 
 mod card;
 mod player;
@@ -81,15 +82,9 @@ fn gameloop(
     println!("\nPlayer's hand:\n{}\n{}\n", player_hand[0],
         player_hand[1]);
 
-    println!("Dealer's hand:\n{}\n{}\n", dealer_hand[0],
-        dealer_hand[1]);
+    println!("Dealer's hand:\n{} H", dealer_hand[0]);
 
     loop {
-        println!("Player's Hand:");
-        for card in 0..player_hand.len() {
-            println!("{}", player_hand[card]);
-        }
-
         println!("\nMake a choice:\nH - HIT\tS - STAND");
 
         let mut player_choice_buf = String::new();
@@ -110,7 +105,12 @@ fn gameloop(
                 println!("{}", player_hand[card]);
             }
 
-            return println!("\nBUST");
+            return println!("\nBUST\nYou Lose.");
+        }
+
+        println!("Player's Hand:");
+        for card in 0..player_hand.len() {
+            println!("{}", player_hand[card]);
         }
     }
 
@@ -124,16 +124,24 @@ fn gameloop(
         println!();
     }
 
-    println!("Dealer's Hand:");
     for card in 0..dealer_hand.len() {
         println!("{}", dealer_hand[card]);
     }
 
-    if CardDeck::get_total_hand_sum(&player_hand) > 21 {
+    if CardDeck::get_total_hand_sum(&dealer_hand) > 21 {
         return println!("\nDEALER BUSTED OUT! YOU WIN!!!!");
     }
+
+    let player_hand_sum = CardDeck::get_total_hand_sum(&player_hand);
+    let dealer_hand_sum = CardDeck::get_total_hand_sum(&dealer_hand);
+
+    match player_hand_sum.cmp(&dealer_hand_sum) {
+        Ordering::Greater => {
+            println!("\nPlayer's hand sum {} is greater than dealer's hand sum {}\nYou Win!!!!", player_hand_sum, dealer_hand_sum);
+        }
+        Ordering::Less => {
+            println!("\nDealer's hand sum {} is greater than player's hand sum {}\nYou Lose.", dealer_hand_sum, player_hand_sum);
+        }
+        Ordering::Equal => println!("\nDraw.")
+    }
 }
-
-/*fn handle_win_condition(player_sum: u8, dealer_sum: u8) {
-
-}*/
